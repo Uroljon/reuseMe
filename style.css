@@ -257,3 +257,148 @@ body {
 .leaflet-control-location-button:hover {
   background: #f4f4f4;
 }
+
+/* Search control styles */
+.leaflet-control-search {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 0;
+  overflow: hidden;
+}
+
+.burger-menu {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
+}
+
+.burger-menu:hover {
+  background: #f4f4f4;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  outline: none;
+  min-width: 200px;
+}
+
+.search-button {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
+}
+
+.search-button:hover {
+  background: #f4f4f4;
+}
+
+.filter-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  min-width: 250px;
+  z-index: 1000;
+  margin-top: 4px;
+}
+
+.category-label {
+  display: block;
+  padding: 6px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.category-label input {
+  margin-right: 8px;
+}
+
+/* Filter panel styles */
+.filter-panel {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: left 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-panel.open {
+  left: 0;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.close-panel {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+
+.panel-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.category-label {
+  display: block;
+  padding: 8px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.select-all-label {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+}
+
+.apply-filters {
+  width: 100%;
+  padding: 12px;
+  background: var(--modal-accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+.apply-filters:hover {
+  background: #0a6a32;
+}
