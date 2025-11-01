@@ -4,12 +4,14 @@ const MUENSTER_COORDS = [51.9607, 7.6261];
 
 function setMap() {
   // Initialize the map object
-  const map = L.map('map').setView(MUENSTER_COORDS, 13); // Zoom level 13 is good for a city view.
+  const map = L.map('map', { zoomControl: false }).setView(MUENSTER_COORDS, 13); // Zoom level 13 is good for a city view.
   // Add the OpenStreetMap tile layer (the actual map background)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
+  // Add zoom controls to bottom right, like Google Maps
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
   window.map = map;
 }
 

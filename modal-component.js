@@ -37,6 +37,10 @@ class CustomModal extends HTMLElement {
   }
 
   _onAllow() {
+    const checkbox = this.querySelector('#dont-show-welcome-modal');
+    if (checkbox && checkbox.checked) {
+      sessionStorage.setItem('reuse_modal_shown', '1');
+    }
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
       this._onClose();
