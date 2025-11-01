@@ -3,27 +3,21 @@ const GEOJSON_LOCAL_PATH = "./geojson.json";
 const MUENSTER_COORDS = [51.9607, 7.6261];
 
 async function setMap() {
-  // Initialize the map object
   const map = L.map('map', { zoomControl: false });
-  // Add the OpenStreetMap tile layer (the actual map background)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
-  // Add zoom controls to bottom right, like Google Maps
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-  // Check geolocation permission
   try {
     const permission = await navigator.permissions.query({ name: 'geolocation' });
     if (permission.state === 'granted') {
-      // Get current position and set view to user location with zoom 15
       const pos = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
       });
       const coords = [pos.coords.latitude, pos.coords.longitude];
       map.setView(coords, 15);
-      // Add user location marker
       const locationIcon = L.divIcon({
         className: 'user-location-marker',
         html: '<div class="location-circle"><div class="location-dot"></div></div>',
@@ -33,11 +27,9 @@ async function setMap() {
       const marker = L.marker(coords, { icon: locationIcon }).addTo(map).bindPopup('Your location');
       window.userLocationMarker = marker;
     } else {
-      // Use default Münster coords with zoom 13
       map.setView(MUENSTER_COORDS, 13);
     }
   } catch (e) {
-    // Fallback to default if permission check or geolocation fails
     map.setView(MUENSTER_COORDS, 13);
   }
 
@@ -53,7 +45,6 @@ function setLocations(url, map) {
       return response.json();
     })
     .then(data => {
-      // Add the GeoJSON data to the map
       L.geoJSON(data, {
         pointToLayer: function (feature, latlng) {
           return L.marker(latlng);
