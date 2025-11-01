@@ -61,7 +61,11 @@ class CustomModal extends HTMLElement {
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
               });
-              L.marker([coords.lat, coords.lon], { icon: locationIcon }).addTo(window.map).bindPopup('Your location');
+              if (window.userLocationMarker) {
+                window.userLocationMarker.setLatLng([coords.lat, coords.lon]);
+              } else {
+                window.userLocationMarker = L.marker([coords.lat, coords.lon], { icon: locationIcon }).addTo(window.map).bindPopup('Your location');
+              }
             }
           } catch (e) {
             console.warn('Could not update global map with location', e);
