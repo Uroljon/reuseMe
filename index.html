@@ -16,17 +16,23 @@
       <div class="modal-content">
         <button id="modal-close" class="modal-close" aria-label="Close introduction">✕</button>
         <div class="modal-body">
-          <h1 id="modal-title" class="modal-title">YOUR ITEMS DESERVE A SECOND LIFE.</h1>
+          <h1 id="modal-title" class="modal-title">Your items deserve a second life 🪴</h1>
 
           <div class="modal-lines">
-            <p>This tool uses official data from the Stadt Münster to help you find the closest <strong>donation centers, swap meets, and second-hand shops</strong> to give away items you no longer need.</p>
-            <p><strong>This is NOT for Trash.</strong> The purpose is to keep items out of the bin and in the hands of others. The Golden Rule - Your items must be immediately reusable or easily repairable.</p> 
+            <p>This tool uses <a href="https://opendata.stadt-muenster.de/dataset/liste-der-orte-zum-spenden-verkaufen-tauschen-m%C3%BCnster">official data</a> from the Stadt Münster to help you find the closest <strong>donation centers, swap meets, and second-hand shops</strong> to give away items you no longer need.</p>
+            <p>This is <strong>NOT for Trash.</strong> The purpose is to keep items out of the bin and in the hands of others. Your items must be immediately reusable or easily repairable.</p> 
             <p>We do not store your private data, or save your location history. We will ask your browser for your current location only to calculate the distance to the nearest drop-off points.</p>
             <p>Please click "<span>Allow</span>" when prompted so we can show you the fastest route to re-use!</p>
           </div>
 
+          <div class="modal-checkbox">
+            <input type="checkbox" id="dont-show-welcome-modal">
+            <span class="checkmark"></span>
+            <label for="dont-show-welcome-modal">Don't show this message again</label>
+          </div>
+
           <div class="modal-actions">
-            <button id="allow-location" class="btn primary">Okay</button>
+            <button id="allow-location" class="btn primary">Okay 👍</button>
           </div>
         </div>
       </div>

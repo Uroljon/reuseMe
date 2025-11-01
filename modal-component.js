@@ -21,7 +21,7 @@ class CustomModal extends HTMLElement {
 
     this._rootModal.style.display = 'flex';
     document.body.classList.add('modal-active');
-    // setTimeout(() => this._allowBtn && this._allowBtn.focus(), 150);
+    setTimeout(() => this._allowBtn && this._allowBtn.focus(), 150);
   }
 
   _onKey(e) {
@@ -29,7 +29,10 @@ class CustomModal extends HTMLElement {
   }
 
   _onClose() {
-    sessionStorage.setItem('reuse_modal_shown', '1');
+    const checkbox = this.querySelector('#dont-show-welcome-modal');
+    if (checkbox && checkbox.checked) {
+      sessionStorage.setItem('reuse_modal_shown', '1');
+    }
     this._hide();
   }
 
@@ -56,14 +59,10 @@ class CustomModal extends HTMLElement {
           }
         }
 
-        this.dispatchEvent(new CustomEvent('reuse-user-location', { detail: coords, bubbles: true }));
-        sessionStorage.setItem('reuse_modal_shown', '1');
         this._hide();
       },
       (err) => {
         console.warn('Geolocation failed or denied', err);
-        this.dispatchEvent(new CustomEvent('reuse-user-location-error', { detail: err, bubbles: true }));
-        sessionStorage.setItem('reuse_modal_shown', '1');
         this._hide();
       },
       { timeout: 10000 }
@@ -72,6 +71,7 @@ class CustomModal extends HTMLElement {
 
   _hide() {
     if (this._rootModal) this._rootModal.style.display = 'none';
+    document.body.classList.remove('modal-active');
   }
 }
 
