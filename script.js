@@ -10,6 +10,52 @@ async function setMap() {
   }).addTo(map);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
+  // Add My Location control above zoom
+  const LocationControl = L.Control.extend({
+    options: {
+      position: 'bottomright'
+    },
+    onAdd: function(map) {
+      const container = L.DomUtil.create('div', 'leaflet-control leaflet-bar leaflet-control-location');
+      const button = L.DomUtil.create('a', 'leaflet-control-location-button', container);
+      button.innerHTML = '📍';
+      button.href = '#';
+      button.title = 'My Location';
+      L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
+        .on(button, 'click', L.DomEvent.preventDefault)
+        .on(button, 'click', this._onLocationClick, this);
+      return container;
+    },
+    _onLocationClick: function() {
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser.');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const coords = [pos.coords.latitude, pos.coords.longitude];
+          map.setView(coords, 15);
+          // Update or add user location marker
+          if (window.userLocationMarker) {
+            window.userLocationMarker.setLatLng(coords);
+          } else {
+            const locationIcon = L.divIcon({
+              className: 'user-location-marker',
+              html: '<div class="location-circle"><div class="location-dot"></div></div>',
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+            });
+            window.userLocationMarker = L.marker(coords, { icon: locationIcon }).addTo(map).bindPopup('Your location');
+          }
+        },
+        (err) => {
+          alert('Unable to retrieve your location.');
+        }
+      );
+    }
+  });
+  map.addControl(new LocationControl());
+
   try {
     const permission = await navigator.permissions.query({ name: 'geolocation' });
     if (permission.state === 'granted') {

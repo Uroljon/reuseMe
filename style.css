@@ -204,6 +204,11 @@ body {
   }
 }
 
+.leaflet-control-zoom.leaflet-bar.leaflet-control {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 /* User location marker styles (Google Maps-like) */
 .user-location-marker {
   pointer-events: none;
@@ -228,4 +233,27 @@ body {
   background: #4285f4;
   border: 1px solid #ffffff;
   border-radius: 50%;
+}
+
+/* My Location button styles */
+.leaflet-bottom.leaflet-right .leaflet-control-location{
+  margin-bottom: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.leaflet-control-location-button {
+  display: block;
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  text-align: center;
+  line-height: 22px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+}
+
+.leaflet-control-location-button:hover {
+  background: #f4f4f4;
 }
