@@ -97,10 +97,17 @@ function setLocations(url, map) {
         },
         onEachFeature: function (feature, layer) {
           if (feature.properties && feature.properties.Titel) {
+            const title = feature.properties.Webseite
+              ? `<a href="https://${feature.properties.Webseite}" target="_blank">${feature.properties.Titel}</a>`
+              : feature.properties.Titel;
+            const lat = feature.geometry.coordinates[1];
+            const lng = feature.geometry.coordinates[0];
+            const addressLink = `<a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank">${feature.properties.Adresse}</a>`;
             layer.bindPopup(
-              `<b>${feature.properties.Titel}</b><br>` +
+              `<b>${title}</b><br>` +
               `Kategorien: ${feature.properties.Kategorien || 'N/A'}<br>` +
-              `Adresse: ${feature.properties.Adresse}`
+              `Adresse: ${addressLink}` + `<br>` +
+              `Öffnungszeiten: ${feature.properties.Öffnungszeiten || 'N/A'}`
             );
           }
         }
