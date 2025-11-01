@@ -11,10 +11,33 @@
 </head>
 
 <body>
+  <custom-modal>
+    <div id="welcome-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-content">
+        <button id="modal-close" class="modal-close" aria-label="Close introduction">✕</button>
+        <div class="modal-body">
+          <h1 id="modal-title" class="modal-title">YOUR ITEMS DESERVE A SECOND LIFE.</h1>
+
+          <div class="modal-lines">
+            <p>This tool uses official data from the Stadt Münster to help you find the closest <strong>donation centers, swap meets, and second-hand shops</strong> to give away items you no longer need.</p>
+            <p><strong>This is NOT for Trash.</strong> The purpose is to keep items out of the bin and in the hands of others. The Golden Rule - Your items must be immediately reusable or easily repairable.</p> 
+            <p>We do not store your private data, or save your location history. We will ask your browser for your current location only to calculate the distance to the nearest drop-off points.</p>
+            <p>Please click "<span>Allow</span>" when prompted so we can show you the fastest route to re-use!</p>
+          </div>
+
+          <div class="modal-actions">
+            <button id="allow-location" class="btn primary">Okay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </custom-modal>
+
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin></script>
+  <script type="module" src="modal-component.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

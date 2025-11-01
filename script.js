@@ -1,17 +1,19 @@
 // const GEOJSON_API_URL = "https://opendata.stadt-muenster.de/sites/default/files/Tausch-und-Spende-Angebote-in-Muenster2024.geojson";
-const GEOJSON_LOCAL_PATH = "./geojson.json"; 
-
+const GEOJSON_LOCAL_PATH = "./geojson.json";
 const MUENSTER_COORDS = [51.9607, 7.6261];
 
-// Initialize the map object and set the center/zoom level
-const map = L.map('map').setView(MUENSTER_COORDS, 13); // Zoom level 13 is good for a city view.
-// Add the OpenStreetMap tile layer (the actual map background)
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+function setMap() {
+  // Initialize the map object
+  const map = L.map('map').setView(MUENSTER_COORDS, 13); // Zoom level 13 is good for a city view.
+  // Add the OpenStreetMap tile layer (the actual map background)
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+  window.map = map;
+}
 
-function setLocations(url) {
+function setLocations(url, map) {
   fetch(url)
     .then(response => {
       if (!response.ok) {
@@ -40,8 +42,9 @@ function setLocations(url) {
       console.error('There was a problem fetching the GeoJSON data:', error);
     });
 }
+function init() {
+  setMap();
+  setLocations(GEOJSON_LOCAL_PATH, window.map);
+}
 
-
-
-
-setLocations(GEOJSON_LOCAL_PATH);
+window.addEventListener("DOMContentLoaded", init);
