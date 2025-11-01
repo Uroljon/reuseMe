@@ -47,12 +47,17 @@ class CustomModal extends HTMLElement {
       (pos) => {
         const coords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
 
-        // If global map is available, update it
         if (window.map && typeof window.map.setView === 'function') {
           try {
-            window.map.setView([coords.lat, coords.lon], 13);
+            window.map.setView([coords.lat, coords.lon], 15);
             if (window.L) {
-              L.circleMarker([coords.lat, coords.lon], { radius: 6, color: '#0b7a3a' }).addTo(window.map).bindPopup('Your location');
+              const locationIcon = L.divIcon({
+                className: 'user-location-marker',
+                html: '<div class="location-circle"><div class="location-dot"></div></div>',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+              });
+              L.marker([coords.lat, coords.lon], { icon: locationIcon }).addTo(window.map).bindPopup('Your location');
             }
           } catch (e) {
             console.warn('Could not update global map with location', e);
