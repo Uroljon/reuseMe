@@ -2,7 +2,7 @@
 const GEOJSON_LOCAL_PATH = "./geojson.json";
 const MUENSTER_COORDS = [51.9607, 7.6261];
 const WORKER_URL = "https://reuseme.ukhidirboev.workers.dev/";
-const WORKER_API_KEY = "XYZ";
+const WORKER_API_KEY = process.env.WORKER_API_KEY;
 const AI_MAPPING = { 'S': 'S1', 'C': 'S2' };
 const CATEGORIES = [
   { key: 'K', name: 'Kleidung', icon: '👕' },
