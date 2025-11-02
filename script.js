@@ -1,6 +1,9 @@
 // const GEOJSON_API_URL = "https://opendata.stadt-muenster.de/sites/default/files/Tausch-und-Spende-Angebote-in-Muenster2024.geojson";
 const GEOJSON_LOCAL_PATH = "./geojson.json";
 const MUENSTER_COORDS = [51.9607, 7.6261];
+const WORKER_URL = "https://reuseme.ukhidirboev.workers.dev/";
+const WORKER_API_KEY = "XYZ";
+const AI_MAPPING = { 'S': 'S1', 'C': 'S2' };
 const CATEGORIES = [
   { key: 'K', name: 'Kleidung', icon: '👕' },
   { key: 'E', name: 'Elektrogeräte', icon: '🔌' },
@@ -82,11 +85,57 @@ async function setMap() {
 
       const searchInput = L.DomUtil.create('input', 'search-input', container);
       searchInput.type = 'text';
-      searchInput.placeholder = 'Orte suchen';
+      searchInput.placeholder = 'Beschreiben den Artikel der KI...';
 
       const searchButton = L.DomUtil.create('button', 'search-button', container);
       searchButton.innerHTML = '🔍';
       searchButton.title = 'Suchen';
+      
+      // Search functionality
+      L.DomEvent.on(searchButton, 'click', L.DomEvent.stopPropagation)
+        .on(searchButton, 'click', L.DomEvent.preventDefault)
+        .on(searchButton, 'click', async () => {
+          const query = searchInput.value.trim();
+          if (!query) return;
+          if (!WORKER_API_KEY) {
+            console.error("API Key is missing! Deployment configuration error.");
+            return;
+          }
+          try {
+            const response = await fetch(WORKER_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Api-Key': WORKER_API_KEY,
+              },
+              body: JSON.stringify({ item: query }),
+            });
+            if (!response.ok) throw new Error('Worker response not ok');
+            const data = await response.json();
+            // Assume data.categories is array of keys like ['K', 'H']
+            let categories = [...data.category] || [];
+            categories = categories.map(cat => AI_MAPPING[cat] || cat); // Map AI responses to our keys
+            filterLocations(categories, true);
+            const foundCat = CATEGORIES.find(c => c.key === categories[0]);
+            const icon = foundCat ? foundCat.icon : categories[0];
+            searchInput.value = '';
+            searchInput.placeholder = `Gefundene Kategorie: ${icon}`;
+            
+            // Update filter checkboxes
+            const categoryCheckboxes = panelContent.querySelectorAll('input[type="checkbox"][value]');
+            categoryCheckboxes.forEach(cb => {
+              cb.checked = categories.includes(cb.value);
+            });
+            // Update Select All
+            const selectAllCheckbox = panelContent.querySelector('input[type="checkbox"]:not([value])');
+            if (selectAllCheckbox) {
+              selectAllCheckbox.checked = categories.length === CATEGORIES.length;
+            }
+          } catch (error) {
+            console.error('Search error:', error);
+            alert('Suche fehlgeschlagen. Bitte versuchen Sie es später erneut.');
+          }
+        });
 
       // Create side filter panel
       const filterPanel = L.DomUtil.create('div', 'filter-panel', document.body);
@@ -156,7 +205,7 @@ async function setMap() {
         .on(applyButton, 'click', L.DomEvent.preventDefault)
         .on(applyButton, 'click', () => {
           const selected = Array.from(panelContent.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-          filterLocations(selected);
+          filterLocations(selected, true);
           filterPanel.classList.remove('open');
         });
 
@@ -204,14 +253,14 @@ function setLocations(url, map) {
     })
     .then(data => {
       window.originalData = data;
-      filterLocations(CATEGORIES.map(cat => cat.key)); // Initially show all
+      filterLocations(CATEGORIES.map(cat => cat.key), false); // Initially show all, don't open popup
     })
     .catch(error => {
       console.error('There was a problem fetching the GeoJSON data:', error);
     });
 }
 
-function filterLocations(selectedCategories) {
+function filterLocations(selectedCategories, openClosest = false) {
   if (!window.originalData) return;
 
   const filteredFeatures = window.originalData.features.filter(feature => {
@@ -225,6 +274,9 @@ function filterLocations(selectedCategories) {
   if (window.currentLayer) {
     window.map.removeLayer(window.currentLayer);
   }
+
+  // Reset markers array
+  window.currentMarkers = [];
 
   // Add new filtered layer
   window.currentLayer = L.geoJSON(filteredData, {
@@ -251,8 +303,30 @@ function filterLocations(selectedCategories) {
           `Öffnungszeiten: ${feature.properties.Öffnungszeiten || 'N/A'}`
         );
       }
+      // Store marker reference
+      window.currentMarkers.push(layer);
     }
   }).addTo(window.map);
+
+  // Open popup of closest marker to user location only if filtering
+  if (openClosest && window.userLocationMarker && window.currentMarkers.length > 0) {
+    const userLatLng = window.userLocationMarker.getLatLng();
+    let closestMarker = null;
+    let minDistance = Infinity;
+    window.currentMarkers.forEach(marker => {
+      const markerLatLng = marker.getLatLng();
+      const distance = Math.pow(userLatLng.lat - markerLatLng.lat, 2) + Math.pow(userLatLng.lng - markerLatLng.lng, 2);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestMarker = marker;
+      }
+    });
+    if (closestMarker) {
+      closestMarker.openPopup();
+    }
+    // Clean up markers array
+    window.currentMarkers = [];
+  }
 }
 async function init() {
   await setMap();
