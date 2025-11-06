@@ -11,6 +11,15 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, './'),
+    },
+    hot: true,
+    open: true,
+    port: 8080,
+    watchFiles: ['*.html', '*.css', '*.json'],
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.WORKER_API_KEY': JSON.stringify(process.env.WORKER_API_KEY || ''),

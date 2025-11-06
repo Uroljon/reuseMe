@@ -103,7 +103,8 @@ body {
   color: var(--modal-accent);
 }
 
-.modal-content label, .modal-content input {
+.modal-content label,
+.modal-content input {
   cursor: pointer;
 }
 
@@ -122,7 +123,7 @@ body {
   border-radius: 4px;
 }
 
-.modal-checkbox input:checked ~ .checkmark {
+.modal-checkbox input:checked~.checkmark {
   background-color: var(--modal-accent);
 }
 
@@ -139,7 +140,7 @@ body {
   transform: rotate(45deg);
 }
 
-.modal-checkbox input:checked ~ .checkmark:after {
+.modal-checkbox input:checked~.checkmark:after {
   display: block;
 }
 
@@ -180,10 +181,12 @@ body {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(11, 122, 58, 0.7);
   }
+
   70% {
     transform: scale(1.05);
     box-shadow: 0 0 0 10px rgba(11, 122, 58, 0);
   }
+
   100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(11, 122, 58, 0);
@@ -236,7 +239,7 @@ body {
 }
 
 /* My Location button styles */
-.leaflet-bottom.leaflet-right .leaflet-control-location{
+.leaflet-bottom.leaflet-right .leaflet-control-location {
   margin-bottom: 0;
   border-radius: 8px;
   overflow: hidden;
@@ -405,4 +408,88 @@ body {
 
 .apply-filters:hover {
   background: #0a6a32;
+}
+
+@media (max-width: 768px) {
+  .leaflet-top.leaflet-left {
+    right: 10px;
+  }
+
+  .leaflet-control-zoom a {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 24px;
+  }
+
+  .leaflet-control-location-button {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+  }
+
+  .leaflet-control-search {
+    width: 100%;
+    left: 0;
+    right: 0;
+    max-width: none;
+    margin: 0 !important;
+  }
+
+  .search-input {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .burger-menu,
+  .search-button {
+    padding: 12px;
+    font-size: 20px;
+  }
+
+  .leaflet-popup-content {
+    font-size: 16px;
+    line-height: 1.5;
+    min-width: 250px;
+  }
+
+  .leaflet-popup-content b {
+    font-size: 18px;
+  }
+
+  .leaflet-popup-content a {
+    font-size: 16px;
+    text-decoration: underline;
+  }
+
+  .filter-panel {
+    width: 80%;
+    max-width: 320px;
+    left: -80%;
+  }
+
+  .filter-panel.open {
+    left: 0;
+  }
+
+  .category-label {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+
+  .apply-filters {
+    padding: 16px;
+    font-size: 18px;
+  }
+
+  .leaflet-bottom.leaflet-right {
+    bottom: 20px;
+    right: 10px;
+  }
+
+  .leaflet-top.leaflet-left {
+    top: 10px;
+    left: 10px;
+  }
 }
