@@ -153,7 +153,7 @@ async function setMap() {
       const selectAllCheckbox = L.DomUtil.create('input', '', selectAllLabel);
       selectAllCheckbox.type = 'checkbox';
       selectAllCheckbox.checked = true; // Default all selected
-      selectAllLabel.appendChild(document.createTextNode(' Alle auswählen'));
+      selectAllLabel.appendChild(document.createTextNode('Alle auswählen'));
 
       CATEGORIES.forEach(cat => {
         const label = L.DomUtil.create('label', 'category-label', panelContent);
@@ -163,6 +163,61 @@ async function setMap() {
         checkbox.checked = true; // Default all selected
         label.appendChild(document.createTextNode(` ${cat.icon} ${cat.name}`));
       });
+
+      // Donation acceptance section
+      const donationSection = L.DomUtil.create('div', 'donation-section', panelContent);
+      const donationHeader = L.DomUtil.create('p', 'donation-section__header', donationSection);
+      donationHeader.textContent = 'Spenden Annahme:';
+
+      const donationOptions = L.DomUtil.create('div', 'donation-options', donationSection);
+
+      const radioJa = L.DomUtil.create('input', '', donationOptions);
+      radioJa.type = 'radio';
+      radioJa.name = 'donation';
+      radioJa.value = 'ja';
+      const labelJa = L.DomUtil.create('label', 'donation-options__label', donationOptions);
+      labelJa.appendChild(radioJa);
+      const spanJa = L.DomUtil.create('span', '', labelJa);
+      spanJa.textContent = 'Ja';
+      
+      const radioNein = L.DomUtil.create('input', '', donationOptions);
+      radioNein.type = 'radio';
+      radioNein.name = 'donation';
+      radioNein.value = 'nein';
+      const labelNein = L.DomUtil.create('label', 'donation-options__label', donationOptions);
+      labelNein.appendChild(radioNein);
+      const spanNein = L.DomUtil.create('span', '', labelNein);
+      spanNein.textContent = 'Nein';
+      
+      const radioBeide = L.DomUtil.create('input', '', donationOptions);
+      radioBeide.type = 'radio';
+      radioBeide.name = 'donation';
+      radioBeide.value = 'beide';
+      radioBeide.checked = true;
+      const labelBeide = L.DomUtil.create('label', 'donation-options__label', donationOptions);
+      labelBeide.appendChild(radioBeide);
+      const spanBeide = L.DomUtil.create('span', '', labelBeide);
+      spanBeide.textContent = 'Beide';
+
+      // Function to update checked state
+      const updateDonationLabels = () => {
+        document.querySelectorAll('.donation-options__label').forEach(label => {
+          const input = label.querySelector('input[type="radio"]');
+          if (input.checked) {
+            label.classList.add('checked');
+          } else {
+            label.classList.remove('checked');
+          }
+        });
+      };
+
+      // Add event listeners
+      radioJa.addEventListener('change', updateDonationLabels);
+      radioNein.addEventListener('change', updateDonationLabels);
+      radioBeide.addEventListener('change', updateDonationLabels);
+
+      // Initial update
+      updateDonationLabels();
 
       const applyButton = L.DomUtil.create('button', 'apply-filters', panelContent);
       applyButton.textContent = 'Filter anwenden';      // Get all category checkboxes
@@ -205,7 +260,8 @@ async function setMap() {
         .on(applyButton, 'click', L.DomEvent.preventDefault)
         .on(applyButton, 'click', () => {
           const selected = Array.from(panelContent.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-          filterLocations(selected, true);
+          const selectedDonation = panelContent.querySelector('input[name="donation"]:checked').value;
+          filterLocations(selected, true, selectedDonation);
           filterPanel.classList.remove('open');
         });
 
@@ -260,12 +316,16 @@ function setLocations(url, map) {
     });
 }
 
-function filterLocations(selectedCategories, openClosest = false) {
+function filterLocations(selectedCategories, openClosest = false, donationFilter = 'beide') {
   if (!window.originalData) return;
 
   const filteredFeatures = window.originalData.features.filter(feature => {
     const cats = feature.properties.Kategorien ? feature.properties.Kategorien.split(',').map(c => c.trim()) : [];
-    return selectedCategories.some(sel => cats.includes(sel));
+    const donation = feature.properties["Spenden Annahme"];
+    const donationMatch = donationFilter === 'beide' || 
+        (donationFilter === 'ja' && donation === 'ja') ||
+        (donationFilter === 'nein' && (donation === 'nein' || donation === ''));
+    return selectedCategories.some(sel => cats.includes(sel)) && donationMatch;
   });
 
   const filteredData = { ...window.originalData, features: filteredFeatures };
@@ -288,7 +348,10 @@ function filterLocations(selectedCategories, openClosest = false) {
         const title = feature.properties.Webseite
           ? `<a href="https://${feature.properties.Webseite}" target="_blank">${feature.properties.Titel}</a>`
           : feature.properties.Titel;
-        const type = feature.properties.Typ;
+        let type = feature.properties.Typ;
+        if (type == "Spenden & Verkaufen" && feature.properties["Spenden Annahme"] !== "ja") {
+          type = "Spende nicht möglich, nur Verkauf";
+        }
         const lat = feature.geometry.coordinates[1];
         const lng = feature.geometry.coordinates[0];
         const addressLink = `<a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank">${feature.properties.Adresse}</a>`;
@@ -300,11 +363,12 @@ function filterLocations(selectedCategories, openClosest = false) {
           return cat ? cat.icon : catKey;
         }).join(' | ');
         layer.bindPopup(
-          `<b>${title}</b> ${type.length ? "- (" + type + ")" : ""}<br>
-          Kategorien: ${catIcons || 'N/A'}<br>
-          Adresse: ${addressLink}<br>
-          ${phone.length ? "Telefon: " + phone + "<br>" : ""}
-          ${hours.length ? "Öffnungszeiten: " + hours + "<br>" : ""}`
+          `<b>${title}</b><br>
+          <b>Kategorien</b>: ${catIcons || 'N/A'}<br>
+          ${type.length ? "<b>Typ</b>: " + type + "<br>" : ""}
+          <b>Adresse</b>: ${addressLink}<br>
+          ${phone.length ? "<b>Telefon</b>: " + phone + "<br>" : ""}
+          ${hours.length ? "<b>Öffnungszeiten</b>: " + hours + "<br>" : ""}`
         );
       }
       // Store marker reference

@@ -394,6 +394,63 @@ body {
   padding-bottom: 12px;
 }
 
+.donation-section {
+  border-top: 1px solid #eee;
+  margin: 12px 0 0 0;
+  padding: 8px 0 0;
+  font-size: 14px;
+}
+
+.donation-section__header {
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--modal-accent);
+}
+
+.donation-options {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+}
+
+.donation-options__label {
+  flex: 1;
+  text-align: center;
+  padding: 10px 8px;
+  cursor: pointer;
+  background: #fff;
+  color: #333;
+  border-right: 1px solid #eee;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donation-options__label:last-child {
+  border-right: none;
+}
+
+.donation-options__label:hover {
+  background: #e0f0ff;
+  color: #0056b3;
+}
+
+.donation-options__label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.donation-options__label.checked {
+  background: #007bff;
+  color: #fff;
+}
+
 .apply-filters {
   width: 100%;
   padding: 12px;
