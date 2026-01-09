@@ -288,19 +288,23 @@ function filterLocations(selectedCategories, openClosest = false) {
         const title = feature.properties.Webseite
           ? `<a href="https://${feature.properties.Webseite}" target="_blank">${feature.properties.Titel}</a>`
           : feature.properties.Titel;
+        const type = feature.properties.Typ;
         const lat = feature.geometry.coordinates[1];
         const lng = feature.geometry.coordinates[0];
         const addressLink = `<a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank">${feature.properties.Adresse}</a>`;
+        const phone = feature.properties.Telefon;
+        const hours = feature.properties.Öffnungszeiten;
         const cats = feature.properties.Kategorien ? feature.properties.Kategorien.split(',').map(c => c.trim()) : [];
         const catIcons = cats.map(catKey => {
           const cat = CATEGORIES.find(c => c.key === catKey);
           return cat ? cat.icon : catKey;
         }).join(' | ');
         layer.bindPopup(
-          `<b>${title}</b><br>` +
-          `Kategorien: ${catIcons || 'N/A'}<br>` +
-          `Adresse: ${addressLink}` + `<br>` +
-          `Öffnungszeiten: ${feature.properties.Öffnungszeiten || 'N/A'}`
+          `<b>${title}</b> ${type.length ? "- (" + type + ")" : ""}<br>
+          Kategorien: ${catIcons || 'N/A'}<br>
+          Adresse: ${addressLink}<br>
+          ${phone.length ? "Telefon: " + phone + "<br>" : ""}
+          ${hours.length ? "Öffnungszeiten: " + hours + "<br>" : ""}`
         );
       }
       // Store marker reference
