@@ -29,6 +29,7 @@ module.exports = {
         { from: 'index.html', to: 'index.html' },
         { from: 'style.css', to: 'style.css' },
         { from: 'geojson.json', to: 'geojson.json' },
+        { from: 'favicon.ico', to: 'favicon.ico' },
       ],
     }),
   ],

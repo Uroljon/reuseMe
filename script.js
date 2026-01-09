@@ -21,7 +21,7 @@ async function setMap() {
   const map = L.map('map', { zoomControl: false });
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="https://opendata.stadt-muenster.de/dataset/liste-der-orte-zum-spenden-verkaufen-tauschen-m%C3%BCnster">opendata.stadt-muenster.de</a>'
   }).addTo(map);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
